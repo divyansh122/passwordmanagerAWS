@@ -28,7 +28,7 @@ export default function Signup() {
   const [showMasterPassword, setShowMasterPassword] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
-
+  API_BASE_URL="";
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -56,7 +56,7 @@ export default function Signup() {
 
     try {
       const response = await fetch(
-        "https://ig2rl7z3j7.execute-api.ap-south-1.amazonaws.com/dev/signup",
+        `${API_BASE_URL}/signup`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -96,7 +96,7 @@ export default function Signup() {
 
     try {
       const response = await fetch(
-        "https://ig2rl7z3j7.execute-api.ap-south-1.amazonaws.com/dev/confirm",
+         `${API_BASE_URL}/confirm`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
