@@ -27,9 +27,11 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
 
+    const API_BASE_URL="";
+
     try {
       const response = await fetch(
-        "https://ig2rl7z3j7.execute-api.ap-south-1.amazonaws.com/dev/login",
+        `${API_BASE_URL}/login`,
         {
           method: "POST",
           headers: {
