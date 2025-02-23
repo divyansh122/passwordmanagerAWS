@@ -97,6 +97,7 @@ export default function Signup() {
       // Step 1: Confirm with Cognito
       const confirmResponse = await fetch(
         "https://ig2rl7z3j7.execute-api.ap-south-1.amazonaws.com/dev/confirm",
+
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

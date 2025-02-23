@@ -34,6 +34,7 @@ export default function Login() {
       // Cognito login
       const loginResponse = await fetch(
         "https://ig2rl7z3j7.execute-api.ap-south-1.amazonaws.com/dev/login",
+
         {
           method: "POST",
           headers: {

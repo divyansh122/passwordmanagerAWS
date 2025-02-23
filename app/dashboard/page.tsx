@@ -460,7 +460,7 @@ export default function Dashboard() {
     setLoading(true);
     sessionStorage.removeItem("masterPassword");
     localStorage.clear();
-    router.push("/");
+    router.push("/login");
     setLoading(false);
   };
 
