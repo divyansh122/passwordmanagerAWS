@@ -11,15 +11,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Shield } from "lucide-react";
+import { Shield, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
+import CryptoJS from "crypto-js";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [masterPassword, setMasterPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showMasterPassword, setShowMasterPassword] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
@@ -28,7 +31,8 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const response = await fetch(
+      // Cognito login
+      const loginResponse = await fetch(
         "https://ig2rl7z3j7.execute-api.ap-south-1.amazonaws.com/dev/login",
         {
           method: "POST",
@@ -37,32 +41,83 @@ export default function Login() {
           },
           body: JSON.stringify({
             username: email,
-            password: password,
+            password,
           }),
         }
       );
 
-      const data = await response.json();
-
-      if (response.ok) {
-        // Store tokens in localStorage
-        localStorage.setItem("accessToken", data.tokens.AccessToken);
-        localStorage.setItem("idToken", data.tokens.IdToken);
-        localStorage.setItem("refreshToken", data.tokens.RefreshToken);
-
-        // Pass master password to the dashboard
-        router.push(
-          `/dashboard?masterPassword=${encodeURIComponent(masterPassword)}`
-        );
-
-        toast({
-          title: "Success",
-          description: "Logged in successfully",
-        });
-      } else {
-        throw new Error(data.message || "Login failed");
+      const loginData = await loginResponse.json();
+      if (!loginResponse.ok) {
+        throw new Error(loginData.message || "Login failed");
       }
+
+      // Store Cognito tokens
+      localStorage.setItem("accessToken", loginData.tokens.AccessToken);
+      localStorage.setItem("idToken", loginData.tokens.IdToken);
+      localStorage.setItem("refreshToken", loginData.tokens.RefreshToken);
+      localStorage.setItem("userEmail", email);
+
+      // Derive key from login password
+      const key = CryptoJS.PBKDF2(password, email, {
+        keySize: 256 / 32,
+        iterations: 10000,
+      }).toString();
+
+      // Fetch encrypted master password
+      const masterResponse = await fetch(
+        "https://c3cnftu0oj.execute-api.ap-south-1.amazonaws.com/dev/get-master-key",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: loginData.tokens.IdToken,
+          },
+          body: JSON.stringify({
+            username: email,
+          }),
+        }
+      );
+
+      const masterData = await masterResponse.json();
+      if (!masterResponse.ok) {
+        throw new Error(
+          masterData.message || "Failed to fetch master password"
+        );
+      }
+
+      // Log the response to debug
+      console.log("Master key response:", masterData);
+
+      // Check if encryptedMasterKey exists
+      if (!masterData.encryptedMasterKey) {
+        throw new Error("Encrypted master key not found in response");
+      }
+
+      // Decrypt the master password
+      const decryptedMasterPassword = CryptoJS.AES.decrypt(
+        masterData.encryptedMasterKey,
+        key
+      ).toString(CryptoJS.enc.Utf8);
+
+      if (!decryptedMasterPassword) {
+        throw new Error("Decryption failed: Invalid key or corrupted data");
+      }
+
+      if (decryptedMasterPassword !== masterPassword) {
+        throw new Error("Invalid master password");
+      }
+
+      // Store in sessionStorage
+      sessionStorage.setItem("masterPassword", decryptedMasterPassword);
+
+      toast({
+        title: "Success",
+        description: "Logged in successfully",
+      });
+
+      router.push("/dashboard");
     } catch (error) {
+      console.error("Login error:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -97,22 +152,50 @@ export default function Login() {
               />
             </div>
             <div className="space-y-2">
-              <Input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
             </div>
             <div className="space-y-2">
-              <Input
-                type="password"
-                placeholder="Master Password"
-                value={masterPassword}
-                onChange={(e) => setMasterPassword(e.target.value)}
-                required
-              />
+              <div className="relative">
+                <Input
+                  type={showMasterPassword ? "text" : "password"}
+                  placeholder="Master Password"
+                  value={masterPassword}
+                  onChange={(e) => setMasterPassword(e.target.value)}
+                  required
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowMasterPassword(!showMasterPassword)}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+                >
+                  {showMasterPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
               <p className="text-sm text-zinc-400">
                 Your master password is required to decrypt your stored
                 passwords. Please ensure you remember it, as it cannot be
@@ -124,7 +207,7 @@ export default function Login() {
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">
-            Don't have an account?{" "}
+            Don’t have an account?{" "}
             <Link href="/signup" className="text-primary hover:underline">
               Sign up
             </Link>

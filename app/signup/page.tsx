@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Shield, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
+import CryptoJS from "crypto-js";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -32,7 +33,6 @@ export default function Signup() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate passwords
     if (password !== confirmPassword) {
       toast({
         variant: "destructive",
@@ -42,7 +42,6 @@ export default function Signup() {
       return;
     }
 
-    // Validate master password
     if (!masterPassword) {
       toast({
         variant: "destructive",
@@ -95,7 +94,8 @@ export default function Signup() {
     setLoading(true);
 
     try {
-      const response = await fetch(
+      // Step 1: Confirm with Cognito
+      const confirmResponse = await fetch(
         "https://ig2rl7z3j7.execute-api.ap-south-1.amazonaws.com/dev/confirm",
         {
           method: "POST",
@@ -107,22 +107,91 @@ export default function Signup() {
         }
       );
 
-      const data = await response.json();
-
-      if (response.ok) {
-        toast({
-          title: "Success",
-          description: "Account created successfully. Redirecting to login...",
-        });
-
-        // Pass master password to the login page
-        router.push(
-          `/login?masterPassword=${encodeURIComponent(masterPassword)}`
-        );
-      } else {
-        throw new Error(data.error || "Confirmation failed");
+      const confirmData = await confirmResponse.json();
+      if (!confirmResponse.ok) {
+        throw new Error(confirmData.error || "Confirmation failed");
       }
+
+      // Step 2: Log in to get fresh tokens
+      const loginResponse = await fetch(
+        "https://ig2rl7z3j7.execute-api.ap-south-1.amazonaws.com/dev/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: email,
+            password,
+          }),
+        }
+      );
+
+      const loginData = await loginResponse.json();
+      if (!loginResponse.ok) {
+        throw new Error(loginData.message || "Post-confirmation login failed");
+      }
+
+      // Store tokens
+      localStorage.setItem("accessToken", loginData.tokens.AccessToken);
+      localStorage.setItem("idToken", loginData.tokens.IdToken);
+      localStorage.setItem("refreshToken", loginData.tokens.RefreshToken);
+      localStorage.setItem("userEmail", email);
+
+      // Step 3: Encrypt master password
+      const key = CryptoJS.PBKDF2(password, email, {
+        keySize: 256 / 32,
+        iterations: 10000,
+      }).toString();
+
+      const encryptedMasterPassword = CryptoJS.AES.encrypt(
+        masterPassword,
+        key
+      ).toString();
+
+      // Step 4: Prepare payload and log it
+      const payload = {
+        username: email,
+        encryptedMasterKey: encryptedMasterPassword, // Changed to match backend expectation
+      };
+      console.log("Payload for store-master-key:", payload);
+
+      // Step 5: Store encrypted master password with idToken
+      const masterResponse = await fetch(
+        "https://c3cnftu0oj.execute-api.ap-south-1.amazonaws.com/dev/store-master-key",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: loginData.tokens.IdToken,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      const masterData = await masterResponse.json();
+      if (!masterResponse.ok) {
+        console.error(
+          "Master password storage failed:",
+          masterResponse.status,
+          masterData
+        );
+        throw new Error(
+          masterData.message ||
+            `Failed to store master password (Status: ${masterResponse.status})`
+        );
+      }
+
+      // Step 6: Store master password in sessionStorage
+      sessionStorage.setItem("masterPassword", masterPassword);
+
+      toast({
+        title: "Success",
+        description:
+          "Account created successfully. Redirecting to dashboard...",
+      });
+
+      router.push("/dashboard");
     } catch (error) {
+      console.error("Confirmation error:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -251,7 +320,7 @@ export default function Signup() {
                   required
                 />
               </div>
-              <Button className="w-full" type="submit" disabled={loading}>
+              <Button className="w-full" type="ssubmit" disabled={loading}>
                 {loading ? "Confirming..." : "Confirm Email"}
               </Button>
             </form>

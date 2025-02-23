@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -17,7 +17,7 @@ import { Shield, Plus, Copy, Eye, EyeOff, Edit, Trash } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import CryptoJS from "crypto-js";
 
-// Input Modal Component (for Add/Update) with Show Password
+// Input Modal Component
 interface InputModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -101,7 +101,7 @@ const InputModal = ({
   );
 };
 
-// Confirmation Modal Component (for Delete)
+// Confirmation Modal Component
 const ConfirmModal = ({
   isOpen,
   onClose,
@@ -166,19 +166,16 @@ export default function Dashboard() {
 
   const { toast } = useToast();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const masterPassword = searchParams.get("masterPassword"); // Retrieve master password from query
 
-  // Ensure masterPassword is a string
-  const resolvedMasterPassword =
-    typeof masterPassword === "string" ? masterPassword : "";
+  // Retrieve master password from sessionStorage
+  const masterPassword = sessionStorage.getItem("masterPassword") || "";
 
   const API_BASE_URL =
     "https://val13eagu2.execute-api.ap-south-1.amazonaws.com/dev";
 
   const getEncryptionKey = () => {
-    if (!resolvedMasterPassword) throw new Error("Master password not found");
-    return CryptoJS.SHA256(resolvedMasterPassword).toString();
+    if (!masterPassword) throw new Error("Master password not found");
+    return CryptoJS.SHA256(masterPassword).toString();
   };
 
   const fetchPasswords = async () => {
@@ -236,7 +233,7 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    if (!resolvedMasterPassword) {
+    if (!masterPassword) {
       toast({
         variant: "destructive",
         title: "Error",
@@ -246,7 +243,7 @@ export default function Dashboard() {
     } else {
       fetchPasswords();
     }
-  }, [resolvedMasterPassword, router, toast]);
+  }, [masterPassword, router, toast]);
 
   const handleAddPassword = () => {
     setModalType("add");
@@ -461,8 +458,9 @@ export default function Dashboard() {
 
   const handleLogout = () => {
     setLoading(true);
+    sessionStorage.removeItem("masterPassword");
     localStorage.clear();
-    router.push("/");
+    router.push("/login");
     setLoading(false);
   };
 

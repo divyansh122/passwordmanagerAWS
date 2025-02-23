@@ -1,10 +1,10 @@
-import './globals.css';
-import type { Metadata } from 'next';
+import "./globals.css";
+import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'SecureVault - Password Manager',
-  description: 'Secure password management solution',
+  title: "SecureVault - Password Manager",
+  description: "Secure password management solution",
 };
 
 export default function RootLayout({
