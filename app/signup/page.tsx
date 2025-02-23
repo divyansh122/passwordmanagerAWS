@@ -320,7 +320,7 @@ export default function Signup() {
                   required
                 />
               </div>
-              <Button className="w-full" type="ssubmit" disabled={loading}>
+              <Button className="w-full" type="submit" disabled={loading}>
                 {loading ? "Confirming..." : "Confirm Email"}
               </Button>
             </form>
