@@ -76,7 +76,7 @@ Deploy frontend manually to S3 as above.
    
 ## Usage 🖱️
 
-Visit: [Visit te Website](https://d1exuwh9hp95jz.cloudfront.net/).
+Visit: [Visit the Website](https://d1exuwh9hp95jz.cloudfront.net/).
 Sign up or log in with email, password, and master password.
 Manage passwords via the dashboard securely.
 
@@ -129,4 +129,26 @@ Open a PR with details of your changes. Use the Serverless Framework for backend
 Inspired by AWS serverless best practices.
 
 Thanks to Next.js, CryptoJS, Postman, and Serverless Framework communities!
+
+# ScreenShots:--
+
+## Home Page
+
+![image](https://github.com/user-attachments/assets/8c9c90a2-1454-4e32-9027-9dbfa589d3dd
+
+## Login Page
+
+![image](https://github.com/user-attachments/assets/1fe93fed-c712-488b-bcd0-c1f36174612f)
+
+## DashBoard
+
+![image](https://github.com/user-attachments/assets/a24e4c4a-3ecc-411c-807b-a14a338b121a)
+
+## Sign Up page
+
+![image](https://github.com/user-attachments/assets/f79b4762-7dd2-46a6-80d7-70269fafbb9b)
+
+
+
+
 
