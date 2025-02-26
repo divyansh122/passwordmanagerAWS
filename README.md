@@ -77,7 +77,9 @@ Deploy frontend manually to S3 as above.
 ## Usage 🖱️
 
 Visit: [Visit the Website](https://d1exuwh9hp95jz.cloudfront.net/).
+
 Sign up or log in with email, password, and master password.
+
 Manage passwords via the dashboard securely.
 
 ## Architecture 📊
