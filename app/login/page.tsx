@@ -33,7 +33,7 @@ export default function Login() {
     try {
       // Cognito login
       const loginResponse = await fetch(
-        "https://ig2rl7z3j7.execute-api.ap-south-1.amazonaws.com/dev/login",
+        "",
 
         {
           method: "POST",
@@ -66,7 +66,7 @@ export default function Login() {
 
       // Fetch encrypted master password
       const masterResponse = await fetch(
-        "https://c3cnftu0oj.execute-api.ap-south-1.amazonaws.com/dev/get-master-key",
+        "",
         {
           method: "POST",
           headers: {
