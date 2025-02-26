@@ -9,18 +9,27 @@ The Serverless Password Manager is a web app that lets users securely store, man
 ## Features ✨
 
 **Zero-Knowledge Security 🔐**: Uses PBKDF2 and AES (CryptoJS) for client-side decryption, blocking even AWS from accessing plaintext.
+
 **Real-Time Password Management ⏱️**: Add, update, delete, and search passwords with an intuitive UI.
+
 **Responsive Design 📱💻**: Built with Next.js for a fast, mobile-friendly frontend hosted on S3.
+
 **Secure Authentication 🛡️**: Cognito provides JWT-based auth (idToken, accessToken, refreshToken).
+
 **User-Friendly UI 🌈**: Features show/hide toggles, toast notifications, and smooth navigation.
 
 ## Technologies Used 🛠️
 
 AWS: S3, Cognito, Lambda, API Gateway, DynamoDB
+
 Frontend: Next.js (React)
+
 Encryption: CryptoJS (PBKDF2, AES, SHA256)
+
 API Testing: Postman
+
 Version Control: Git
+
 Serverless: Serverless Framework (optional if you want too use !)
 
 ## Installation 🛑
