@@ -171,7 +171,7 @@ export default function Dashboard() {
   const masterPassword = sessionStorage.getItem("masterPassword") || "";
 
   const API_BASE_URL =
-    "https://val13eagu2.execute-api.ap-south-1.amazonaws.com/dev";
+    "";
 
   const getEncryptionKey = () => {
     if (!masterPassword) throw new Error("Master password not found");
