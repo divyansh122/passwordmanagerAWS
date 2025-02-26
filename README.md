@@ -86,22 +86,34 @@ AWS Architecture Diagram
 ***The serverless setup includes***:
 
 S3: Hosts the Next.js app.
+
 Cognito: Handles user auth.
+
 3 API Gateways: For auth, passwords, and master keys.
+
 10 Lambdas: Manage user flows, passwords, and keys.
+
 2 DynamoDB Tables: Store master keys and passwords.
+
+![diagram](https://github.com/user-attachments/assets/98590f0e-bc14-4fa2-8ebb-92617ffad813)
+
 Optionally managed with the Serverless Framework for streamlined deployment and scaling.
 
 ## Testing ✅
 APIs: Test endpoints (e.g., /login, /add e.t.c) with Postman, verifying Cognito tokens and encryption.
+
 Local: Run npm run dev and test in-browser.
 
 ## Future Add-Ons 🤖
 
-**AI Password Strength Analysis 🧠**: Integrate AI (e.g., AWS SageMaker) to analyze password strength, offering real-time feedback on complexity and security.
+**AI Password Strength Analysis 🧠**: Integrate AI (e.g., AWS SageMaker) to analyze password strength, offering real-time feedback on complexity and security.\
+
 **Biometric Auth 👁️**: Add Cognito biometric options for enhanced login security.
+
 **Password Auto-Generation 🔑**: Build a feature to generate strong, random passwords with customizable rules.
+
 **MFA Support 🛡️**: Enable multi-factor authentication via Cognito SMS/TOTP.
+
 **Offline Mode 📴**: Support local password storage with sync capabilities.
 
 1. ```Contributing 🙌
@@ -113,6 +125,8 @@ Local: Run npm run dev and test in-browser.
 Open a PR with details of your changes. Use the Serverless Framework for backend contributions if applicable.
 
 ## Acknowledgements 🙏
+
 Inspired by AWS serverless best practices.
+
 Thanks to Next.js, CryptoJS, Postman, and Serverless Framework communities!
 
