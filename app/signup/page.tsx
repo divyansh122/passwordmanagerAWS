@@ -55,7 +55,7 @@ export default function Signup() {
 
     try {
       const response = await fetch(
-        "https://ig2rl7z3j7.execute-api.ap-south-1.amazonaws.com/dev/signup",
+        "",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -96,7 +96,7 @@ export default function Signup() {
     try {
       // Step 1: Confirm with Cognito
       const confirmResponse = await fetch(
-        "https://ig2rl7z3j7.execute-api.ap-south-1.amazonaws.com/dev/confirm",
+        "",
 
         {
           method: "POST",
@@ -115,7 +115,7 @@ export default function Signup() {
 
       // Step 2: Log in to get fresh tokens
       const loginResponse = await fetch(
-        "https://ig2rl7z3j7.execute-api.ap-south-1.amazonaws.com/dev/login",
+        "",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -157,7 +157,7 @@ export default function Signup() {
 
       // Step 5: Store encrypted master password with idToken
       const masterResponse = await fetch(
-        "https://c3cnftu0oj.execute-api.ap-south-1.amazonaws.com/dev/store-master-key",
+        "",
         {
           method: "POST",
           headers: {
