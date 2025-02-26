@@ -118,11 +118,12 @@ Local: Run npm run dev and test in-browser.
 
 **Offline Mode 📴**: Support local password storage with sync capabilities.
 
-1. ```Contributing 🙌
-   Fork this repo.
-   Create a branch: git checkout -b feature/your-feature.
-   Commit changes: git commit -m "Add your feature".
-   Push: git push origin feature/your-feature.
+## Contributing 🙌
+   1. Fork this repo.
+      ```Create a branch:
+      git checkout -b feature/your-feature.
+      Commit changes: git commit -m "Add your feature".
+      Push: git push origin feature/your-feature.
    
 Open a PR with details of your changes. Use the Serverless Framework for backend contributions if applicable.
 
