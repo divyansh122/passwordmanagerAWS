@@ -136,7 +136,7 @@ Thanks to Next.js, CryptoJS, Postman, and Serverless Framework communities!
 
 ## Home Page
 
-![image](https://github.com/user-attachments/assets/8c9c90a2-1454-4e32-9027-9dbfa589d3dd
+![image](https://github.com/user-attachments/assets/8c9c90a2-1454-4e32-9027-9dbfa589d3dd)
 
 ## Login Page
 
