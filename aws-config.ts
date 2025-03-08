@@ -1,7 +1,7 @@
 import AWS from 'aws-sdk';
 
 AWS.config.update({
-  region: 'ap-south-1', // Replace with your AWS region
+  region: 'ap-south-1', 
 });
 
 const cognitoIdentity = new AWS.CognitoIdentityServiceProvider();
